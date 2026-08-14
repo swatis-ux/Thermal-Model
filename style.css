@@ -1,0 +1,263 @@
+/* ==========================================================================
+   Global Styles & Variables
+   ========================================================================== */
+:root {
+    --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --bg-green: #71a938;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --transition-speed: 0.3s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: #f1f5f9;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Hero Cover Section (Glassmorphism inspired by Image 1)
+   ========================================================================== */
+.hero-cover {
+    width: 100%;
+    min-height: 60vh;
+    /* Simulated leafy grass field background */
+    background: radial-gradient(circle at 80% 20%, rgba(138, 194, 72, 0.9), transparent 50%),
+                radial-gradient(circle at 10% 80%, rgba(77, 128, 30, 0.9), transparent 50%),
+                linear-gradient(135deg, #7cb342 0%, #558b2f 50%, #33691e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative leaf pattern overlay */
+.hero-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.08) 2px, transparent 2px);
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+
+/* Frosted Glass Effect Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 28px;
+    padding: 3.5rem 4rem;
+    text-align: center;
+    max-width: 680px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+.glass-card h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.glass-card p {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #ffffff;
+    opacity: 0.95;
+}
+
+/* ==========================================================================
+   Simulator Layout Section
+   ========================================================================== */
+.main-container {
+    max-width: 800px;
+    margin: -3rem auto 4rem;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.simulator-section {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-header h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* ==========================================================================
+   Range Slider Controls
+   ========================================================================== */
+.controls-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.controls-card label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+input[type="range"] {
+    flex: 1;
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(to right, #3a0ca3, #00b4d8, #2a9d8f, #f4a261, #e63946);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #1e293b;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.temp-badge {
+    font-size: 1.3rem;
+    font-weight: 800;
+    min-width: 85px;
+    text-align: center;
+    background: #1e293b;
+    color: #ffffff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+}
+
+/* ==========================================================================
+   Result Card & Visuals (Inspired by Image 2)
+   ========================================================================== */
+.result-card {
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transition: border-color var(--transition-speed) ease, background var(--transition-speed) ease;
+}
+
+.stress-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.badge-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.badge-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.temp-range-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.illustration-box {
+    width: 100%;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.illustration-box svg {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.stress-description {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-top: 1rem;
+}
+
+/* Dynamic Color Themes for Stress Categories */
+.theme-extreme-heat { color: #d90429; border-color: #d90429; background: #fff5f5; }
+.theme-very-strong-heat { color: #f77f00; border-color: #f77f00; background: #fff9f2; }
+.theme-strong-heat { color: #fb8500; border-color: #fb8500; background: #fffbf2; }
+.theme-moderate-heat { color: #f4a261; border-color: #f4a261; background: #fefae0; }
+.theme-comfortable { color: #2a9d8f; border-color: #2a9d8f; background: #f4fbf7; }
+.theme-slight-cold { color: #00b4d8; border-color: #00b4d8; background: #f0fbfd; }
+.theme-moderate-cold { color: #0077b6; border-color: #0077b6; background: #edf7fc; }
+.theme-strong-cold { color: #023e8a; border-color: #023e8a; background: #eef4fb; }
+.theme-very-strong-cold { color: #3a0ca3; border-color: #3a0ca3; background: #f2f0fb; }
+.theme-extreme-cold { color: #7209b7; border-color: #7209b7; background: #f7f0fb; }
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .glass-card { padding: 2rem 1.5rem; }
+    .glass-card h1 { font-size: 2.2rem; }
+    .glass-card p { font-size: 1.1rem; }
+    .badge-title { font-size: 1.1rem; }
+    .simulator-section { padding: 1.5rem; }
+}
