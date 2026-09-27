@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UTCI Thermal Stress Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero-cover">
+    <nav class="hero-nav" aria-label="Main">
+        <a class="logo" href="index.html">S.</a>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="thermal_context.html">Context</a></li>
+            <li><a href="#simulator">Simulator</a></li>
+        </ul>
+        <a class="nav-pill" href="#simulator">Try it</a>
+    </nav>
+
+    <div class="hero-copy">
+        <span class="eyebrow">UTCI · Thermal Comfort</span>
+        <h1>It says <em>26°C</em>.<br>How does it actually feel?</h1>
+        <p>The same park, the same afternoon — but sun, shade, wind and what's underfoot change how the body experiences heat.</p>
+    </div>
+
+    <figure class="hero-art">
+        <img src="assets/hero-lawn.png" width="651" height="305"
+             alt="Top-down illustration of people relaxing on a sunny lawn, some lying in the open sun and a group sitting in the dappled shade of a tree.">
+    </figure>
+</header>
+
+<main class="main-container" id="simulator">
+    <section class="simulator-section">
+        <div class="section-header">
+            <h2>Thermal Stress Simulator</h2>
+            <p>Drag the slider to see which of the 11 UTCI stress categories a felt temperature falls into.</p>
+        </div>
+
+        <div class="controls-card">
+            <label for="temp-slider">Felt temperature (UTCI)</label>
+            <div class="slider-container">
+                <input type="range" id="temp-slider" min="-50" max="50" step="0.5" value="26">
+                <span class="temp-badge" id="temp-badge" aria-live="polite">26°C</span>
+            </div>
+            <div class="stress-scale" id="stress-scale" role="group" aria-label="Thermal stress categories"></div>
+            <div class="scale-labels"><span>Cold</span><span>Comfort</span><span>Heat</span></div>
+        </div>
+
+        <div class="result-card" id="result-card" aria-live="polite">
+            <div class="stress-header">
+                <span class="badge-num" id="stress-number">5</span>
+                <span class="badge-title" id="stress-title">NO THERMAL STRESS (COMFORTABLE)</span>
+            </div>
+            <div class="temp-range-text" id="temp-range-text">9°C to 26°C</div>
+            <div class="illustration-box" id="illustration-box" aria-hidden="true"></div>
+            <p class="stress-description" id="stress-description">Comfortable, no thermal stress.</p>
+        </div>
+    </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
