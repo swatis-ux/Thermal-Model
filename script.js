@@ -255,6 +255,22 @@ const thermalCategories = [
     }
 ];
 
+// Accent colours per theme, used for the slider fill, the scale strip and the page tint
+const themeAccents = {
+    "theme-extreme-heat":      { accent: "#d90429", soft: "#fff1f1" },
+    "theme-very-strong-heat":  { accent: "#e76f00", soft: "#fff6ec" },
+    "theme-strong-heat":       { accent: "#fb8500", soft: "#fff9ee" },
+    "theme-moderate-heat":     { accent: "#e9a23b", soft: "#fef8e4" },
+    "theme-comfortable":       { accent: "#2a9d8f", soft: "#eef9f4" },
+    "theme-slight-cold":       { accent: "#00a6c7", soft: "#ecf9fc" },
+    "theme-moderate-cold":     { accent: "#0077b6", soft: "#ebf5fb" },
+    "theme-strong-cold":       { accent: "#023e8a", soft: "#ecf2fa" },
+    "theme-very-strong-cold":  { accent: "#3a0ca3", soft: "#f1eefb" },
+    "theme-extreme-cold":      { accent: "#7209b7", soft: "#f6eefb" }
+};
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // DOM Elements
 const tempSlider = document.getElementById('temp-slider');
 const tempBadge = document.getElementById('temp-badge');
@@ -264,25 +280,103 @@ const stressTitle = document.getElementById('stress-title');
 const tempRangeText = document.getElementById('temp-range-text');
 const illustrationBox = document.getElementById('illustration-box');
 const stressDescription = document.getElementById('stress-description');
+const stressScale = document.getElementById('stress-scale'); // optional
+
+let currentCategory = null;
+
+// Categories are ordered hot → cold, so the first one whose lower bound we reach wins.
+// This avoids gaps between ranges (e.g. 25.95°C fell between 25.9 and 26 before).
+function findCategory(temp) {
+    return thermalCategories.find(cat => temp >= cat.minTemp)
+        || thermalCategories[thermalCategories.length - 1];
+}
+
+function formatTemp(temp) {
+    return `${Number.isInteger(temp) ? temp : temp.toFixed(1)}°C`;
+}
+
+// Paint the slider track up to the thumb in the current accent colour
+function paintSlider(accent) {
+    const min = parseFloat(tempSlider.min) || 0;
+    const max = parseFloat(tempSlider.max) || 100;
+    const pct = ((parseFloat(tempSlider.value) - min) / (max - min)) * 100;
+    tempSlider.style.setProperty('--fill', `${pct}%`);
+    tempSlider.style.setProperty('--accent', accent);
+}
+
+// Build the 11-step scale strip (click a step to jump to that category)
+function buildScale() {
+    if (!stressScale) return;
+    stressScale.innerHTML = '';
+    // Cold on the left, hot on the right — same direction as the slider
+    [...thermalCategories].reverse().forEach(cat => {
+        const { accent } = themeAccents[cat.themeClass];
+        const step = document.createElement('button');
+        step.type = 'button';
+        step.className = 'scale-step';
+        step.style.setProperty('--step-color', accent);
+        step.dataset.num = cat.num;
+        step.title = `${cat.num}. ${cat.title} (${cat.rangeText})`;
+        step.setAttribute('aria-label', step.title);
+        step.textContent = cat.num;
+        step.addEventListener('click', () => {
+            // Jump to the middle of the category, clamped to the slider range
+            const lo = Math.max(cat.minTemp, parseFloat(tempSlider.min));
+            const hi = Math.min(cat.maxTemp, parseFloat(tempSlider.max));
+            const inc = parseFloat(tempSlider.step) || 1;
+            tempSlider.value = Math.round(((lo + hi) / 2) / inc) * inc;
+            updateSimulator(parseFloat(tempSlider.value));
+        });
+        stressScale.appendChild(step);
+    });
+}
+
+function swapIllustration(svg) {
+    if (prefersReducedMotion || !illustrationBox.animate) {
+        illustrationBox.innerHTML = svg;
+        return;
+    }
+    illustrationBox.animate(
+        [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(0.94)' }],
+        { duration: 140, easing: 'ease-in', fill: 'forwards' }
+    ).onfinish = () => {
+        illustrationBox.innerHTML = svg;
+        illustrationBox.animate(
+            [{ opacity: 0, transform: 'translateY(8px) scale(0.96)' }, { opacity: 1, transform: 'none' }],
+            { duration: 260, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' }
+        );
+    };
+}
 
 // Function to update the view based on temperature
 function updateSimulator(temp) {
-    // Find matching thermal category
-    const category = thermalCategories.find(cat => temp >= cat.minTemp && temp <= cat.maxTemp) 
-                    || thermalCategories[4]; // Default fallback to comfortable
+    const category = findCategory(temp);
+    const { accent, soft } = themeAccents[category.themeClass];
 
-    // Update Slider Badge
-    tempBadge.textContent = `${temp}°C`;
+    tempBadge.textContent = formatTemp(temp);
+    tempBadge.style.background = accent;
+    paintSlider(accent);
 
-    // Update Card Values
+    // Only re-render the card when the category actually changes
+    if (category === currentCategory) return;
+    currentCategory = category;
+
     stressNumber.textContent = category.num;
     stressTitle.textContent = category.title;
     tempRangeText.textContent = category.rangeText;
-    illustrationBox.innerHTML = category.svg;
     stressDescription.textContent = category.description;
+    swapIllustration(category.svg);
 
-    // Reset theme classes and apply current theme
     resultCard.className = "result-card " + category.themeClass;
+    document.documentElement.style.setProperty('--page-tint', soft);
+
+    if (stressScale) {
+        stressScale.querySelectorAll('.scale-step').forEach(step => {
+            const active = Number(step.dataset.num) === category.num;
+            step.classList.toggle('is-active', active);
+            step.setAttribute('aria-pressed', active);
+        });
+    }
 }
 
 // Event Listener for Slider
@@ -291,4 +385,5 @@ tempSlider.addEventListener('input', (e) => {
 });
 
 // Initial load
+buildScale();
 updateSimulator(parseFloat(tempSlider.value));
